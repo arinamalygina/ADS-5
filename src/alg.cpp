@@ -1,8 +1,8 @@
 // Copyright 2021 NNTU-CS
-#include "tstack.h" 
-#include <string> 
-#include <sstream> 
-#include <iostream> 
+#include "tstack.h"
+#include <string>
+#include <sstream>
+#include <iostream>
 bool isOperator(char c) {
     return c == '+' || c == '-' || c == '*' || c == '/';
 }
@@ -40,7 +40,7 @@ std::string infx2pstfx(std::string inf) {
     }
     return postfix;
 }
-int eval(std::string pref) {
+int eval(std::string post) {
     TStack<int, 100> stack;
     std::istringstream stream(post);
     int num1, num2;
