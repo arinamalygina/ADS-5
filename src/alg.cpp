@@ -27,7 +27,8 @@ std::string infx2pstfx(std::string inf) {
             }
         } else if (isOperator(c)) {
             postfix += ' ';
-            while (!stack.isEmpty() && getPriority(stack.pop()) >= getPriority(c)) {
+            while (!stack.isEmpty() &&
+                getPriority(stack.pop()) >= getPriority(c)) {
                 postfix += stack.pop();
                 postfix += ' ';
             }
