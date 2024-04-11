@@ -3,29 +3,17 @@
 #define INCLUDE_TSTACK_H_
 
 template<typename T, int size>
-class TStack {
-private:
-T data[100];
-int top;
-
-public:
-TStack() : top(-1) {}
-void push(T value) {
-  if (!isFull())
-    data[++top] = value;
-  else
-    throw std::string("Full");
-}
-T get() const { return data[top]; }
-T pop() {
-  if (isEmpty()) {
-    throw std::string("Empty");
-  } else {
-    return data[top--];
-  }
-}
-bool isEmpty() const { return top == -1; }
-bool isFull() const { return top == size - 1; }
-};
+template <class T, int size> 
+class TStack { 
+private: 
+    T *stackPtr; 
+    int top; 
+public: 
+    TStack(); 
+    ~TStack(); 
+    void push(const T &value); 
+    T pop(); 
+    bool isEmpty(); 
+}; 
 
 #endif  // INCLUDE_TSTACK_H_
