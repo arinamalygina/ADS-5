@@ -2,13 +2,13 @@
 #ifndef INCLUDE_TSTACK_H_
 #define INCLUDE_TSTACK_H_
 
-template<typename T, int size>
+template <typename T, int size>
 template <class T, int size>
 class TStack {
-private:
+ private:
     T *stackPtr;
     int top;
-public:
+ public:
     TStack();
     ~TStack();
     void push(const T &value);
