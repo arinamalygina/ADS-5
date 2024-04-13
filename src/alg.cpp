@@ -1,72 +1,99 @@
 // Copyright 2021 NNTU-CS
-#include "tstack.h"
 #include <map>
+#include "tstack.h"
 
-bool isOperator(char c) {
-    return c == '+' || c == '-' || c == '*' || c == '/';
-}
-int getPriority(char c) {
-    if (c == '+' || c == '-')
-        return 1;
-    else if (c == '*' || c == '/')
-        return 2;
-    return 0;
+int Priora(char x) {
+  switch (x) {
+    case '(':
+      return 0;
+    case ')':
+      return 1;
+    case '+':
+    case '-':
+      return 2;
+    case '*':
+    case '/':
+      return 3;
+    default:
+      return -1;
+  }
 }
 std::string infx2pstfx(std::string inf) {
-    TStack<char, 100> stack;
-    std::string postfix = "";
-    for (char &c : inf) {
-        if (std::isdigit(c)) {
-            postfix += c;
-        } else if (c == '(') {
-            stack.push(c);
-        } else if (c == ')') {
-            while (!stack.isEmpty() && stack.pop() != '(') {
-                postfix += ' ';
-            }
-        } else if (isOperator(c)) {
-            postfix += ' ';
-            while (!stack.isEmpty() &&
-                getPriority(stack.pop()) >= getPriority(c)) {
-                postfix += stack.pop();
-                postfix += ' ';
-            }
-            stack.push(c);
-        }
-    }
-    while (!stack.isEmpty()) {
-        postfix += ' ';
-        postfix += stack.pop();
-    }
-    return postfix;
-}
-int eval(std::string post) {
-    TStack<int, 100> stack;
-    std::istringstream stream(post);
-    int num1, num2;
-    char op;
-    while (stream >> num1) {
-        if (std::isdigit(stream.peek())) {
-            stack.push(num1);
+  std::string rez, rez1;
+  TStack<char, 100> stack1;
+  for (auto& x : inf) {
+    int p = Priora(x);
+    if (p == -1) {
+      rez = rez + x + ' ';
+    } else {
+      char elem = stack1.get();
+      if (p == 0 || Priora(elem) < p || stack1.isEmpty()) {
+        stack1.push(x);
+      } else {
+        if (x == ')') {
+          while (Priora(elem) >= p) {
+            rez = rez + elem + ' ';
+            stack1.pop();
+            elem = stack1.get();
+          }
+          stack1.pop();
         } else {
-            stream >> op;
-            num2 = stack.pop();
-            num1 = stack.pop();
-            switch (op) {
-                case '+':
-                    stack.push(num1 + num2);
-                    break;
-                case '-':
-                    stack.push(num1 - num2);
-                    break;
-                case '*':
-                    stack.push(num1 * num2);
-                    break;
-                case '/':
-                    stack.push(num1 / num2);
-                    break;
-            }
+          while (Priora(elem) >= p) {
+            rez = rez + elem + ' ';
+            stack1.pop();
+            elem = stack1.get();
+          }
+          stack1.push(x);
         }
+      }
     }
-    return stack.pop();
+  }
+  while (!stack1.isEmpty()) {
+    rez = rez + stack1.get() + ' ';
+    stack1.pop();
+  }
+  for (int i = 0; i < rez.size() - 1; i++) rez1 += rez[i];
+  return rez1;
+}
+
+int schet(const int& p, const int& v, const int& x) {
+  switch (x) {
+    case '+':
+      return p + v;
+    case '-':
+      return p - v;
+    case '/':
+      return p / v;
+    case '*':
+      return p * v;
+    default:
+      return 0;
+  }
+}
+
+int eval(std::string pref) {
+  TStack<int, 100> stack1;
+  std::string rez = "";
+  for (int i = 0; i < pref.size(); i++) {
+    char elem = pref[i];
+    if (Priora(elem) == -1) {
+      if (pref[i] == ' ') {
+        continue;
+      } else if (isdigit(pref[i + 1])) {
+        rez += pref[i];
+        continue;
+      } else {
+        rez += pref[i];
+        stack1.push(atoi(rez.c_str()));
+        rez = "";
+      }
+    } else {
+      int v = stack1.get();
+      stack1.pop();
+      int p = stack1.get();
+      stack1.pop();
+      stack1.push(schet(p, v, elem));
+    }
+  }
+  return stack1.get();
 }
